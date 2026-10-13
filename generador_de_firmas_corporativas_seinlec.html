@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SEINLEC - Generador de Firmas Corporativas</title>
+  <!-- Tailwind CSS para el diseño de la interfaz -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    /* Estilos para preservar la fidelidad del renderizado de correo */
+    .signature-canvas table {
+      border-collapse: collapse !important;
+      mso-table-lspace: 0pt !important;
+      mso-table-rspace: 0pt !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen py-8 px-4">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Header de la Aplicación -->
+    <header class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between pb-5 border-b border-slate-300 gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 bg-emerald-700 text-white font-bold text-xs rounded tracking-wider shadow-sm">SEINLEC S.A.C.</span>
+          <span class="text-xs text-slate-500 font-medium">Identidad Corporativa & Telecomunicaciones</span>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mt-1">Generador de Firmas Corporativas</h1>
+      </div>
+      <p class="text-xs text-slate-500 max-w-xs text-left sm:text-right leading-relaxed">
+        Personaliza tus datos, previsualiza el diseño ejecutivo y presiona <strong>"Copiar Firma"</strong> para pegarla en Gmail u Outlook.
+      </p>
+    </header>
+
+    <!-- Contenido Principal en 2 Columnas -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Columna 1: Formulario de Configuración (5 columnas) -->
+      <section class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
+          <span>💼</span> Datos del Colaborador
+        </h2>
+
+        <form id="signatureForm" class="space-y-3.5" onsubmit="event.preventDefault();">
+          <!-- Nombre y Apellidos -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Nombre Completo</label>
+            <input type="text" id="inputNombre" value="Miguelangel J. Contreras Victorio" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- Cargo -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Cargo / Especialidad</label>
+            <input type="text" id="inputCargo" value="Coordinador de Logística" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- Subtítulo / Área -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Área / División</label>
+            <input type="text" id="inputArea" value="Servicios en Ingeniería, Logística y Telecomunicaciones" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- Teléfono / Celular -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Teléfono Móvil</label>
+            <input type="text" id="inputTelefono" value="+51 902 304 843" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- Correo Corporativo -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Correo Electrónico</label>
+            <input type="email" id="inputEmail" value="miguelangel.contreras@seinlec.com" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- Sitio Web -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Página Web Oficial</label>
+            <input type="text" id="inputWeb" value="www.seinlec.com" 
+                   class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition">
+          </div>
+
+          <!-- URLs de Logotipos (Con autoconversión de Google Drive) -->
+          <div class="pt-2 border-t border-slate-100">
+            <details class="text-xs text-slate-600 group">
+              <summary class="font-semibold text-slate-700 uppercase mb-2 cursor-pointer select-none flex items-center justify-between">
+                <span>🖼️ Enlaces de Logotipos</span>
+                <span class="text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div class="space-y-2.5 pt-1 pl-1">
+                <div>
+                  <label class="block text-[11px] text-slate-500 mb-0.5">Logo SEINLEC (URL o Drive)</label>
+                  <input type="text" id="inputLogoUrl" value="https://lh3.googleusercontent.com/d/1W0_krmb8i8R2O-OcrntoW3rYcirqG35q" 
+                         class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded outline-none font-mono text-slate-700">
+                </div>
+                <div>
+                  <label class="block text-[11px] text-slate-500 mb-0.5">Sello ISO 9001 (URL o Drive)</label>
+                  <input type="text" id="inputIsoUrl" value="https://lh3.googleusercontent.com/d/1L5uo5igDYEJSiqPUofvWqg3UNq_kyZlx" 
+                         class="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded outline-none font-mono text-slate-700">
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <!-- Opciones Opcionales de la Firma -->
+          <div class="pt-3 border-t border-slate-100 space-y-2">
+            <span class="block text-xs font-semibold text-slate-700 uppercase mb-1">Módulos Opcionales</span>
+            
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-600 hover:text-slate-900">
+              <input type="checkbox" id="checkISO" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+              <span>Incluir Sello de Certificación <strong>ISO 9001:2015</strong></span>
+            </label>
+
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-600 hover:text-slate-900">
+              <input type="checkbox" id="checkLema" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+              <span>Incluir lema institucional SEINLEC</span>
+            </label>
+
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-600 hover:text-slate-900">
+              <input type="checkbox" id="checkLegal" checked class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+              <span>Incluir cláusula de confidencialidad y aviso ecológico</span>
+            </label>
+
+            <label class="flex items-center gap-2 cursor-pointer text-xs text-blue-700 font-semibold p-2 bg-blue-50 rounded-lg">
+              <input type="checkbox" id="checkVersionCorta" class="rounded text-blue-600 focus:ring-blue-500 w-4 h-4">
+              <span>Modo "Firma Corta" (Para respuestas y reenvíos rápidos)</span>
+            </label>
+          </div>
+        </form>
+      </section>
+
+      <!-- Columna 2: Vista Previa y Botones de Copiado (7 columnas) -->
+      <section class="lg:col-span-7 space-y-5">
+        
+        <!-- Tarjeta de Vista Previa -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+          <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-100">
+            <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
+              <span>👁️</span> Previsualización en Tiempo Real
+            </h2>
+            <span class="text-[11px] bg-slate-100 text-slate-600 font-medium px-2 py-0.5 rounded-full">Simulador de Correo</span>
+          </div>
+
+          <!-- Contenedor de la Firma -->
+          <div id="previewContainer" class="signature-canvas p-4 sm:p-6 bg-white border border-dashed border-slate-300 rounded-xl overflow-x-auto min-h-[220px]">
+            <!-- Render dinámico con JS -->
+          </div>
+        </div>
+
+        <!-- Barra de Botones de Acción -->
+        <div class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-3">
+          <button id="btnCopiarVisual" type="button" class="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-semibold text-sm rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+            <span>📋</span> Copiar Firma (Pegar directo)
+          </button>
+          
+          <button id="btnCopiarHTML" type="button" class="py-3 px-4 bg-slate-800 hover:bg-slate-900 active:bg-black text-white font-semibold text-sm rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+            <span>&lt;/&gt;</span> Copiar HTML
+          </button>
+
+          <button id="btnDescargar" type="button" class="py-3 px-4 border border-slate-300 hover:bg-slate-50 text-slate-700 font-semibold text-sm rounded-xl transition flex items-center justify-center gap-2">
+            <span>💾</span> Descargar .html
+          </button>
+        </div>
+
+        <!-- Toast de Notificación -->
+        <div id="toastMessage" class="hidden p-3.5 bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-semibold rounded-xl text-center shadow-sm transition">
+          ¡Firma copiada! Abre la configuración de tu correo y presiona Ctrl + V.
+        </div>
+
+        <!-- Guía Rápida de Instalación -->
+        <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl text-xs text-slate-700 space-y-2">
+          <p class="font-bold text-slate-900 flex items-center gap-1.5">
+            <span>💡</span> ¿Cómo instalarla en tu correo corporativo?
+          </p>
+          <ol class="list-decimal list-inside space-y-1 text-slate-600 leading-relaxed">
+            <li>Haz clic en el botón <strong>"Copiar Firma (Pegar directo)"</strong>.</li>
+            <li><strong>En Gmail:</strong> Ve a <em>Configuración (⚙️) &gt; Ver todos los ajustes &gt; General &gt; Firma</em>, crea una nueva y presiona <kbd class="px-1.5 py-0.5 bg-slate-200 rounded text-slate-800 font-mono text-[10px]">Ctrl + V</kbd>.</li>
+            <li><strong>En Outlook:</strong> Ve a <em>Archivo &gt; Opciones &gt; Correo &gt; Firmas</em> (o la rueda de ajustes en Outlook Web) y presiona <kbd class="px-1.5 py-0.5 bg-slate-200 rounded text-slate-800 font-mono text-[10px]">Ctrl + V</kbd>.</li>
+          </ol>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Referencias al DOM
+    const nombre = document.getElementById('inputNombre');
+    const cargo = document.getElementById('inputCargo');
+    const area = document.getElementById('inputArea');
+    const telefono = document.getElementById('inputTelefono');
+    const email = document.getElementById('inputEmail');
+    const web = document.getElementById('inputWeb');
+    const logoUrlInput = document.getElementById('inputLogoUrl');
+    const isoUrlInput = document.getElementById('inputIsoUrl');
+    const checkISO = document.getElementById('checkISO');
+    const checkLema = document.getElementById('checkLema');
+    const checkLegal = document.getElementById('checkLegal');
+    const checkVersionCorta = document.getElementById('checkVersionCorta');
+    const previewContainer = document.getElementById('previewContainer');
+    const toast = document.getElementById('toastMessage');
+
+    // Función auxiliar para convertir enlaces estándar de Google Drive en enlaces directos CDN
+    function normalizarUrlImagen(url) {
+      if (!url) return '';
+      const driveMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || url.match(/id=([a-zA-Z0-9_-]+)/);
+      if (driveMatch && driveMatch[1]) {
+        return `https://lh3.googleusercontent.com/d/${driveMatch[1]}`;
+      }
+      return url.trim();
+    }
+
+    // Iconos universales de alta fidelidad para clientes de correo (15x15 px)
+    const iconPhone = `<img src="https://cdn-icons-png.flaticon.com/512/724/724664.png" width="13" height="13" style="display:inline-block; vertical-align:middle; margin-right:8px; border:0;" alt="Tel:"/>`;
+    const iconMail = `<img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" width="13" height="13" style="display:inline-block; vertical-align:middle; margin-right:8px; border:0;" alt="Email:"/>`;
+    const iconGlobe = `<img src="https://cdn-icons-png.flaticon.com/512/1006/1006771.png" width="13" height="13" style="display:inline-block; vertical-align:middle; margin-right:8px; border:0;" alt="Web:"/>`;
+
+    function generarHTMLFirma() {
+      const vNombre = nombre.value.trim() || "Tu Nombre";
+      const vCargo = cargo.value.trim() || "Tu Cargo";
+      const vArea = area.value.trim() || "SEINLEC S.A.C.";
+      const vTelefono = telefono.value.trim() || "+51 000 000 000";
+      const vEmail = email.value.trim() || "usuario@seinlec.com";
+      const vWeb = web.value.trim() || "www.seinlec.com";
+      const telLimpio = vTelefono.replace(/\s+/g, '');
+      const logoUrl = normalizarUrlImagen(logoUrlInput.value);
+      const isoUrl = normalizarUrlImagen(isoUrlInput.value);
+
+      const esCorta = checkVersionCorta.checked;
+
+      // VERSIÓN CORTA (Para respuestas rápidas)
+      if (esCorta) {
+        return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #334155; line-height: 1.35; border-collapse: collapse;">
+  <tr>
+    <td style="vertical-align: middle; padding-right: 14px; border-right: 2px solid #2E7D32;">
+      <span style="font-size: 14px; font-weight: bold; color: #0f172a; display: block; line-height: 1.2;">${vNombre}</span>
+      <span style="font-size: 11px; font-weight: 600; color: #2E7D32; text-transform: uppercase;">${vCargo} | SEINLEC S.A.C.</span>
+    </td>
+    <td style="vertical-align: middle; padding-left: 14px; font-size: 12px; color: #475569;">
+      <a href="tel:${telLimpio}" style="color: #334155; text-decoration: none; margin-right: 12px; font-weight: 500;">${iconPhone}${vTelefono}</a>
+      <a href="mailto:${vEmail}" style="color: #0284c7; text-decoration: none;">${iconMail}${vEmail}</a>
+    </td>
+  </tr>
+</table>`;
+      }
+
+      // Sello ISO 9001
+      const isoHtml = checkISO.checked ? `
+        <div style="margin-top: 10px; text-align: center;">
+          <img src="${isoUrl}" alt="Certificación ISO 9001:2015" width="115" style="display: block; width: 115px; max-width: 115px; height: auto; margin: 0 auto; border: 0;" />
+        </div>` : '';
+
+      // Lema corporativo
+      const lemaHtml = checkLema.checked ? `
+        <tr>
+          <td style="padding-top: 10px;">
+            <div style="font-size: 11px; font-style: italic; color: #64748b; line-height: 1.35; border-left: 2px solid #84cc16; padding-left: 8px;">
+              “Más que tecnología, somos el lazo que une personas, ideas y oportunidades.”
+            </div>
+          </td>
+        </tr>` : '';
+
+      // Aviso legal y ambiental
+      const legalHtml = checkLegal.checked ? `
+  <tr>
+    <td colspan="2" style="padding-top: 14px; border-top: 1px solid #e2e8f0; margin-top: 14px;">
+      <p style="font-size: 8.5px; color: #94a3b8; margin: 0 0 5px 0; text-align: justify; line-height: 1.3; font-family: Arial, sans-serif;">
+        <strong>AVISO DE CONFIDENCIALIDAD:</strong> La información contenida en este correo y sus archivos adjuntos es de carácter confidencial y para uso exclusivo del destinatario. Si usted no es el receptor autorizado, queda prohibida cualquier revisión, difusión, copia o divulgación de su contenido.
+      </p>
+      <p style="font-size: 9.5px; color: #15803d; margin: 0; font-family: Arial, sans-serif; font-weight: 500;">
+        🌱 <em>Por favor, no imprimas este correo si no es indispensable. Comprometidos con el medio ambiente.</em>
+      </p>
+    </td>
+  </tr>` : '';
+
+      // ESTRUCTURA PRINCIPAL DE LA FIRMA PROFESIONAL
+      return `
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; color: #334155; line-height: 1.4; border-collapse: collapse; max-width: 580px;">
+  <tr>
+    <!-- Columna Izquierda: Logo SEINLEC + ISO 9001 -->
+    <td style="vertical-align: middle; padding-right: 20px; text-align: center; border-right: 2px solid #2E7D32; width: 140px; min-width: 140px;">
+      <a href="https://${vWeb}" target="_blank" style="text-decoration: none; display: block;">
+        <img src="${logoUrl}" alt="SEINLEC" width="125" style="display: block; width: 125px; max-width: 125px; height: auto; margin: 0 auto; border: 0;" />
+      </a>
+      ${isoHtml}
+    </td>
+
+    <!-- Columna Derecha: Información de Contacto -->
+    <td style="vertical-align: top; padding-left: 20px;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+        <!-- Nombre y Cargo -->
+        <tr>
+          <td>
+            <div style="font-size: 16px; font-weight: bold; color: #0f172a; letter-spacing: -0.2px; line-height: 1.2; margin-bottom: 3px;">
+              ${vNombre}
+            </div>
+            <div style="font-size: 12px; font-weight: 600; color: #2E7D32; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;">
+              ${vCargo}
+            </div>
+            <div style="font-size: 11px; font-weight: 500; color: #64748b; margin-bottom: 10px;">
+              SEINLEC S.A.C. &bull; ${vArea}
+            </div>
+          </td>
+        </tr>
+
+        <!-- Datos con Iconos Vectoriales -->
+        <tr>
+          <td>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="font-size: 12px; line-height: 1.5; color: #475569;">
+              <tr>
+                <td style="padding: 1.5px 0;">
+                  ${iconPhone}
+                  <a href="tel:${telLimpio}" style="color: #334155; text-decoration: none; font-weight: 500;">${vTelefono}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 1.5px 0;">
+                  ${iconMail}
+                  <a href="mailto:${vEmail}" style="color: #0284c7; text-decoration: none;">${vEmail}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 1.5px 0;">
+                  ${iconGlobe}
+                  <a href="https://${vWeb}" target="_blank" style="color: #0284c7; text-decoration: none; font-weight: 500;">${vWeb}</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        ${lemaHtml}
+      </table>
+    </td>
+  </tr>
+  ${legalHtml}
+</table>`;
+    }
+
+    // Actualiza la vista previa en el DOM
+    function actualizarPreview() {
+      previewContainer.innerHTML = generarHTMLFirma();
+    }
+
+    // Escuchar eventos en todos los campos interactivos
+    const inputs = [nombre, cargo, area, telefono, email, web, logoUrlInput, isoUrlInput, checkISO, checkLema, checkLegal, checkVersionCorta];
+    inputs.forEach(el => el.addEventListener('input', actualizarPreview));
+    inputs.forEach(el => el.addEventListener('change', actualizarPreview));
+
+    function mostrarToast(texto) {
+      toast.textContent = texto;
+      toast.classList.remove('hidden');
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4000);
+    }
+
+    // Copiar formato enriquecido (Rich Text) para pegar en Gmail y Outlook
+    document.getElementById('btnCopiarVisual').addEventListener('click', async () => {
+      const html = generarHTMLFirma();
+      try {
+        const blobHtml = new Blob([html], { type: 'text/html' });
+        const blobText = new Blob([previewContainer.innerText], { type: 'text/plain' });
+        const data = [new ClipboardItem({ 'text/html': blobHtml, 'text/plain': blobText })];
+        await navigator.clipboard.write(data);
+        mostrarToast('✅ ¡Firma copiada! Abre la configuración de tu correo y presiona Ctrl + V.');
+      } catch (err) {
+        // Método de respaldo para compatibilidad
+        const range = document.createRange();
+        range.selectNode(previewContainer);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+        document.execCommand('copy');
+        window.getSelection().removeAllRanges();
+        mostrarToast('✅ ¡Firma copiada con éxito! Pégala en tu cliente de correo con Ctrl + V.');
+      }
+    });
+
+    // Copiar código HTML fuente
+    document.getElementById('btnCopiarHTML').addEventListener('click', () => {
+      const html = generarHTMLFirma();
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = html;
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempTextarea);
+      mostrarToast('📋 Código HTML copiado al portapapeles.');
+    });
+
+    // Descargar archivo .html listo para abrir
+    document.getElementById('btnDescargar').addEventListener('click', () => {
+      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:20px; font-family:Arial, sans-serif;">${generarHTMLFirma()}</body></html>`;
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `firma_${(nombre.value || 'seinlec').toLowerCase().replace(/\s+/g, '_')}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Render inicial
+    actualizarPreview();
+  </script>
+</body>
+</html>
